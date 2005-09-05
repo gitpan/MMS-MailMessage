@@ -10,11 +10,11 @@ MMS::MailMessage - A class representing an MMS (or picture) message.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -38,23 +38,23 @@ Return a new MMS::MailMessage object.
 
 =over
 
-=item headerdatetime STRING
+=item header_datetime STRING
 
 Returns the time and date the MMS was sent (?) when invoked with no supplied parameter.  When supplied with a parameter it sets the object property to the supplied parameter.
 
-=item headerfrom STRING
+=item header_from STRING
 
 Returns the sending email address the MMS was sent from when invoked with no supplied parameter.  When supplied with a parameter it sets the object property to the supplied parameter.
 
-=item headerto STRING
+=item header_to STRING
 
 Returns the recieving email address the MMS was sent to when invoked with no supplied parameter.  When supplied with a parameter it sets the object property to the supplied parameter.
 
-=item headersubject STRING
+=item header_subject STRING
 
 Returns the MMS subject when invoked with no supplied parameter.  When supplied with a parameter it sets the object property to the supplied parameter.
 
-=item headertext STRING
+=item header_text STRING
 
 Returns the MMS bodytext when invoked with no supplied parameter.  When supplied with a paramater it sets the object property to the supplied parameter.
 
@@ -62,13 +62,49 @@ Returns the MMS bodytext when invoked with no supplied parameter.  When supplied
 
 Returns an array reference to the array of MMS message attachments.  When supplied with a parameter it sets the object property to the supplied parameter.
 
-=item addattachment MIME::Entity
+=item add_attachment MIME::Entity
 
 Adds the supplied MIME::Entity attachment to the attachment stack for the message.  This method is mainly used by the MMS::MailParser class to add attatchments while parsing.
 
+=item is_valid
+
+Returns true or false depending if the header_datetime, header_from and header_to fields are all populated or not.
+
+=back
+
+=head2 Deprecated Methods
+
+Methods listed here are maintained for backwards compatibility and should not be used in new code as they may be removed in future versions.
+
+=over
+
+=item headerdatetime
+
+Equivalent to header_datetime
+
+=item headerfrom
+
+Equivalent to header_from
+
+=item headerto
+
+Equivalent to header_to
+
+=item headersubject
+
+Equivalent to header_subject
+
+=item headertext
+
+Equivalent to header_text
+
+=item addattachment
+
+Equivalent to add_attachment
+
 =item isvalid
 
-Returns true or false depending if the headerdatetime, headerfrom and headerto fields are all populated or not.
+Equivalent to is_valid
 
 =back
 
@@ -110,11 +146,11 @@ sub new {
   my $self = {};
   bless $self, $type;
 
-  $self->{fields} = [	"headerfrom",
-			"headerto",
-			"headertext",
-			"headerdatetime",
-			"headersubject",
+  $self->{fields} = [	"header_from",
+			"header_to",
+			"header_text",
+			"header_datetime",
+			"header_subject",
 			"attachments"];
 
   foreach my $field (@{$self->{fields}}) {
@@ -125,48 +161,48 @@ sub new {
   return $self;
 }
 
-sub headerdatetime {
+sub header_datetime {
 
   my $self = shift;
 
-  if (@_) { $self->{headerdatetime} = shift }
-  return $self->{headerdatetime};
+  if (@_) { $self->{header_datetime} = shift }
+  return $self->{header_datetime};
 
 }
 
-sub headerfrom {
+sub header_from {
 
   my $self = shift;
 
-  if (@_) { $self->{headerfrom} = shift }
-  return $self->{headerfrom};
+  if (@_) { $self->{header_from} = shift }
+  return $self->{header_from};
 
 }
 
-sub headerto {
+sub header_to {
 
   my $self = shift;
 
-  if (@_) { $self->{headerto} = shift }
-  return $self->{headerto};
+  if (@_) { $self->{header_to} = shift }
+  return $self->{header_to};
 
 }
 
-sub headertext {
+sub header_text {
 
   my $self = shift;
 
-  if (@_) { $self->{headertext} = shift }
-  return $self->{headertext};
+  if (@_) { $self->{header_text} = shift }
+  return $self->{header_text};
 
 }
 
-sub headersubject {
+sub header_subject {
 
   my $self = shift;
 
-  if (@_) { $self->{headersubject} = shift }
-  return $self->{headersubject};
+  if (@_) { $self->{header_subject} = shift }
+  return $self->{header_subject};
 
 }
 
@@ -179,7 +215,7 @@ sub attachments {
 
 }
 
-sub addattachment {
+sub add_attachment {
 
   my $self = shift;
   my $attachment = shift;
@@ -194,17 +230,17 @@ sub addattachment {
 
 }
 
-sub isvalid {
+sub is_valid {
 
   my $self = shift;
 
-  unless ($self->headerfrom) {
+  unless ($self->header_from) {
     return 0;
   }
-  unless ($self->headerto) {
+  unless ($self->header_to) {
     return 0;
   }
-  unless ($self->headerdatetime) {
+  unless ($self->header_datetime) {
     return 0;
   }
 
@@ -233,6 +269,29 @@ sub DESTROY {
 
 }
 
+# Deprecated Methods ############
+# 
 
+sub headerdatetime {
+  header_datetime(@_);
+}
+sub headerfrom {
+  header_from(@_);
+}
+sub headerto {
+  header_to(@_);
+}
+sub headersubject {
+  header_subject(@_);
+}
+sub headertext {
+  header_text(@_);
+}
+sub addattachment {
+  add_attachment(@_);
+}
+sub isvalid {
+  is_valid(@_);
+}
 
 1; # End of MMS::MailMessage
